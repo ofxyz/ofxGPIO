@@ -5,7 +5,7 @@
 class ofApp : public ofBaseApp
 {
         public:
-		DFRobot_C4001 MmSensor;
+		DFRobot_C4001* mmSensor;
 
 		void setup()
 		{
@@ -16,15 +16,15 @@ class ofApp : public ofBaseApp
 		     */
 
 		    mmSensor = new DFRobot_C4001_I2C("/dev/i2c-1", 0x2A);
-		    mmSensor.begin();
-		    mmSensor.setSensorMode(eSpeedMode);
-		    mmSensor.setDetectThres(30, 600, 10);
-		    mmSensor.setFrettingDetection(eON);
+		    mmSensor->begin();
+		    mmSensor->setSensorMode(eSpeedMode);
+		    mmSensor->setDetectThres(30, 600, 10);
+		    mmSensor->setFrettingDetection(eON);
 		}
 
 		void update(){
-			if(mmSensor.getTargetNumber() > 0) {
-				ofLog() << MmSensor.getTargetRange();
+			if(mmSensor->getTargetNumber() > 0) {
+				ofLog() << mmSensor->getTargetRange();
 			}
 		}
 
