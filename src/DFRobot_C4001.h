@@ -410,7 +410,7 @@ private:
 	virtual int16_t readReg(uint8_t reg, uint8_t* data, uint8_t len) = 0;
 };
 
-class DFRobot_C4001_I2C :public DFRobot_C4001 {
+class DFRobot_C4001_I2C : public DFRobot_C4001 {
 public:
 	DFRobot_C4001_I2C(const char* deviceName, uint8_t addr = DEVICE_ADDR_0);
 	bool begin(void);

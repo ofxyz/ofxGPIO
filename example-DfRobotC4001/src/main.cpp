@@ -5,7 +5,7 @@
 class ofApp : public ofBaseApp
 {
         public:
-		DFRobot_C4001* mmSensor;
+		DFRobot_C4001_I2C* mmSensor;
 
 		void setup()
 		{
