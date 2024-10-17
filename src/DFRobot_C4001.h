@@ -152,7 +152,7 @@ public:
 #define EXIST_MODE      "setRunApp 0"
 
 	DFRobot_C4001();
-	~DFRobot_C4001();
+	virtual ~DFRobot_C4001();
 	uint8_t  uartI2CFlag = 0;
 	/**
 	 * @fn motionDetection

@@ -9,7 +9,7 @@ class ofApp : public ofBaseApp
 
 		void setup()
 		{
-			/*
+		    /*
 		     * The Df Robot sensor has a switch 
 		     * for address selection a maximum
 		     * of two sensors on I2C: address = 0x2A || 0x2B
@@ -48,6 +48,7 @@ class ofApp : public ofBaseApp
 			usleep(1000);
 			ofLog() << "Getting Data...";
 			if(mmSensor->getTargetNumber() > 0) {
+				ofLog() << (int)mmSensor->getTargetNumber();
 				ofLog() << mmSensor->getTargetRange();
 			}
 		}
@@ -59,6 +60,6 @@ class ofApp : public ofBaseApp
 
 int main( ){
     ofAppNoWindow w;
-	ofSetupOpenGL(&w,0,0, OF_WINDOW);
-	ofRunApp( new ofApp() );
+    ofSetupOpenGL(&w,0,0, OF_WINDOW);
+    ofRunApp( new ofApp() );
 }
