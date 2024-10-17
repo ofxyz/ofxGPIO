@@ -16,13 +16,37 @@ class ofApp : public ofBaseApp
 		     */
 
 		    mmSensor = new DFRobot_C4001_I2C("/dev/i2c-1", 0x2A);
-		    mmSensor->begin();
-		    mmSensor->setSensorMode(eSpeedMode);
-		    mmSensor->setDetectThres(30, 600, 10);
+		    while (!mmSensor->begin()){
+				ofLog() << "Waiting to connect to sensor ...";
+				usleep(1000);
+			}
+			
+			usleep(1000);
+			ofLog() << "setSensorMode...";
+
+		    if (!mmSensor->setSensorMode(eSpeedMode))
+		    {
+				ofLog() << "Failed to setSensorMode";
+			}
+		    
+		    usleep(1000);
+			ofLog() << "setDetectThres...";
+
+		    if (!mmSensor->setDetectThres(30, 600, 10))
+		    {
+				ofLog() << "Failed to setDetectThres";
+			}
+		    
+		    usleep(1000);
+			ofLog() << "setFrettingDetection...";
+
 		    mmSensor->setFrettingDetection(eON);
+		    
 		}
 
 		void update(){
+			usleep(1000);
+			ofLog() << "Getting Data...";
 			if(mmSensor->getTargetNumber() > 0) {
 				ofLog() << mmSensor->getTargetRange();
 			}

@@ -10,8 +10,10 @@
  */
 #include "DFRobot_C4001.h"
 
-DFRobot_C4001::DFRobot_C4001() {}
-DFRobot_C4001::~DFRobot_C4001() {}
+#define sleep(x) usleep(1000 * x)
+
+DFRobot_C4001::DFRobot_C4001() {};
+DFRobot_C4001::~DFRobot_C4001() {};
 
 sSensorStatus_t DFRobot_C4001::getStatus(void)
 {
@@ -75,56 +77,56 @@ void DFRobot_C4001::setSensor(eSetMode_t mode)
     if (uartI2CFlag == I2C_FLAG) {
         if (mode == eStartSen) {
             writeReg(REG_CTRL0, &temp, (uint8_t)1);
-            usleep(200);  // must timer
+            sleep(200);  // must timer
         }
         else if (mode == eStopSen) {
             writeReg(REG_CTRL0, &temp, (uint8_t)1);
-            usleep(200);  // must timer
+            sleep(200);  // must timer
         }
         else if (mode == eResetSen) {
             writeReg(REG_CTRL0, &temp, (uint8_t)1);
-            usleep(1500);  // must timer
+            sleep(1500);  // must timer
         }
         else if (mode == eSaveParams) {
             writeReg(REG_CTRL1, &temp, (uint8_t)1);
-            usleep(500);  // must timer
+            sleep(500);  // must timer
         }
         else if (mode == eRecoverSen) {
             writeReg(REG_CTRL1, &temp, (uint8_t)1);
-            usleep(800);  // must timer
+            sleep(800);  // must timer
         }
         else if (mode == eChangeMode) {
             writeReg(REG_CTRL1, &temp, (uint8_t)1);
-            usleep(1500);  // must timer
+            sleep(1500);  // must timer
         }
     }
     else {
         if (mode == eStartSen) {
             writeReg(0, (uint8_t*)START_SENSOR, strlen(START_SENSOR));
-            usleep(200);  // must timer
+            sleep(200);  // must timer
         }
         else if (mode == eStopSen) {
             writeReg(0, (uint8_t*)STOP_SENSOR, strlen(STOP_SENSOR));
-            usleep(200);  // must timer
+            sleep(200);  // must timer
         }
         else if (mode == eResetSen) {
             writeReg(0, (uint8_t*)RESET_SENSOR, strlen(RESET_SENSOR));
-            usleep(1500);  // must timer
+            sleep(1500);  // must timer
         }
         else if (mode == eSaveParams) {
             writeReg(0, (uint8_t*)STOP_SENSOR, strlen(STOP_SENSOR));
-            usleep(200);  // must timer
+            sleep(200);  // must timer
             writeReg(0, (uint8_t*)SAVE_CONFIG, strlen(SAVE_CONFIG));
-            usleep(800);  // must timer
+            sleep(800);  // must timer
             writeReg(0, (uint8_t*)START_SENSOR, strlen(START_SENSOR));
         }
         else if (mode == eRecoverSen) {
             writeReg(0, (uint8_t*)STOP_SENSOR, strlen(STOP_SENSOR));
-            usleep(200);
+            sleep(200);
             writeReg(0, (uint8_t*)RECOVER_SENSOR, strlen(RECOVER_SENSOR));
-            usleep(800);  // must timer
+            sleep(800);  // must timer
             writeReg(0, (uint8_t*)START_SENSOR, strlen(START_SENSOR));
-            usleep(500);
+            sleep(500);
         }
     }
 }
@@ -152,17 +154,17 @@ bool DFRobot_C4001::setSensorMode(eMode_t mode)
         sensorStop();
         if (mode == eExitMode) {
             writeReg(0, (uint8_t*)EXIST_MODE, strlen(EXIST_MODE));
-            usleep(50);
+            sleep(50);
         }
         else {
             writeReg(0, (uint8_t*)SPEED_MODE, strlen(SPEED_MODE));
-            usleep(50);
+            sleep(50);
         }
-        usleep(50);
+        sleep(50);
         writeReg(0, (uint8_t*)SAVE_CONFIG, strlen(SAVE_CONFIG));
-        usleep(500);
+        sleep(500);
         writeReg(0, (uint8_t*)START_SENSOR, strlen(START_SENSOR));
-        usleep(100);
+        sleep(100);
         return true;
     }
 }
@@ -744,29 +746,30 @@ sResponseData_t DFRobot_C4001::wRCMD(std::string cmd1, uint8_t count)
     sResponseData_t responseData;
     sensorStop();
     writeReg(0, (uint8_t*)cmd1.c_str(), cmd1.length());
-    usleep(100);
+    sleep(100);
     len = readReg(0, temp, 200);
     responseData = anaysisResponse(temp, len, count);
-    usleep(100);
+    sleep(100);
     writeReg(0, (uint8_t*)START_SENSOR, strlen(START_SENSOR));
-    usleep(100);
+    sleep(100);
     return responseData;
 }
 
 void DFRobot_C4001::writeCMD(std::string cmd1, std::string cmd2, uint8_t count)
 {
+    ofLog() << cmd1 << " " << cmd2;
     sensorStop();
     writeReg(0, (uint8_t*)cmd1.c_str(), cmd1.length());
-    usleep(100);
+    sleep(100);
     if (count > 1) {
-        usleep(100);
+        sleep(100);
         writeReg(0, (uint8_t*)cmd2.c_str(), cmd2.length());
-        usleep(100);
+        sleep(100);
     }
     writeReg(0, (uint8_t*)SAVE_CONFIG, strlen(SAVE_CONFIG));
-    usleep(100);
+    sleep(100);
     writeReg(0, (uint8_t*)START_SENSOR, strlen(START_SENSOR));
-    usleep(100);
+    sleep(100);
 }
 
 bool DFRobot_C4001::sensorStop(void)
@@ -774,7 +777,7 @@ bool DFRobot_C4001::sensorStop(void)
     uint8_t len = 0;
     uint8_t temp[200] = { 0 };
     writeReg(0, (uint8_t*)STOP_SENSOR, strlen(STOP_SENSOR));
-    usleep(1000);
+    sleep(1000);
     len = readReg(0, temp, 200);
     while (1) {
         if (len != 0) {
@@ -783,7 +786,7 @@ bool DFRobot_C4001::sensorStop(void)
             }
         }
         memset(temp, 0, 200);
-        usleep(400);
+        sleep(400);
         writeReg(0, (uint8_t*)STOP_SENSOR, strlen(STOP_SENSOR));
         len = readReg(0, temp, 200);
 
@@ -792,15 +795,36 @@ bool DFRobot_C4001::sensorStop(void)
 
 DFRobot_C4001_I2C::DFRobot_C4001_I2C(const char* deviceName, uint8_t addr)
 {
+    i2c = nullptr;
     path = deviceName;
     _addr = addr;
     uartI2CFlag = I2C_FLAG;
 }
 
+DFRobot_C4001_I2C::~DFRobot_C4001_I2C()
+{
+    if(i2c != nullptr) delete i2c;
+}
+
 bool DFRobot_C4001_I2C::begin()
 {
-    i2c = new I2c(path.c_str());
-    return (i2c->addressSet(_addr) > 0) ? true : false;
+    ofLog() << "Creating Device: "<< path.c_str();
+    if(i2c == nullptr)
+        i2c = new I2c(path.c_str());
+    
+    if (i2c == nullptr)
+    {
+        ofLog() << "Failed to create the i2c device:" << path.c_str() << std::endl;
+        return false;
+    }
+    
+    bool bRes =  (i2c->addressSet(_addr) > 0) ? true:false;
+    if(bRes == false)
+    {
+        ofLog() << "Failed to set the address " << _addr <<" of the i2c device" << std::endl;
+        delete i2c;
+    }
+    return bRes;
 }
 
 void DFRobot_C4001_I2C::writeReg(uint8_t reg, uint8_t* data, uint8_t len)
