@@ -4,6 +4,8 @@
 #include <linux/i2c-dev.h>
 #include <unistd.h>
 #include "i2c.h"
+#include <regex>
+#include <filesystem>
 
 I2c::I2c(const char * deviceName)
 {
@@ -129,3 +131,27 @@ uint16_t I2c::readBlock(uint8_t command, uint8_t size, uint8_t * data)
 	return result;
 }
 
+std::vector<std::pair<std::string, uint8_t>> I2c::getDevices(uint8_t start /*=0*/, uint8_t end /*128*/)
+{
+	std::vector<std::pair<std::string, uint8_t>> i2cDevices;
+	std::regex i2cPattern("/dev/i2c-\\d+");
+	for (const auto& entry : std::filesystem::directory_iterator("/dev")) {
+		std::string path = entry.path().string();
+		if (std::regex_match(path, i2cPattern)) {
+			int f = open(path.c_str(), O_RDWR);
+			if(f == -1) continue;
+			for(uint8_t address = 0; address <= end; ++address) {
+				int result = ioctl(f, I2C_SLAVE, address);
+				if(result == 0) {
+					int res = i2c_smbus_read_byte(f);
+					if (res >0)
+					{
+						i2cDevices.push_back(std::make_pair(path, address));
+					}
+				}
+			}
+			close(f);
+		}
+	}
+	return i2cDevices;
+}

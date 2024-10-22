@@ -808,20 +808,21 @@ DFRobot_C4001_I2C::~DFRobot_C4001_I2C()
 
 bool DFRobot_C4001_I2C::begin()
 {
-    ofLog() << "Creating Device: "<< path.c_str();
-    if(i2c == nullptr)
+    ofLog(OF_LOG_VERBOSE) << "Creating Device: "<< path.c_str();
+    if(i2c == nullptr){
         i2c = new I2c(path.c_str());
-    
+    }
+
     if (i2c == nullptr)
     {
-        ofLog() << "Failed to create the i2c device:" << path.c_str() << std::endl;
+        ofLog(OF_LOG_WARNING) << "Failed to create the i2c device:" << path.c_str() << std::endl;
         return false;
     }
     
     bool bRes =  (i2c->addressSet(_addr) > 0) ? true:false;
     if(bRes == false)
     {
-        ofLog() << "Failed to set the address " << _addr <<" of the i2c device" << std::endl;
+        ofLog(OF_LOG_WARNING) << "Failed to set the address " << _addr <<" of the i2c device" << std::endl;
         delete i2c;
     }
     return bRes;
